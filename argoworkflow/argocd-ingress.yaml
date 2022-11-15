@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-central-1:297607762119:certificate/79512545-008f-4bd1-9e8f-f2015ce1d38c
+    alb.ingress.kubernetes.io/conditions.argogrpc: |
+      [{"field":"http-header","httpHeaderConfig":{"httpHeaderName": "Content-Type", "values":["application/grpc"]}}]
+    alb.ingress.kubernetes.io/ip-address-type: dualstack
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    external-dns.alpha.kubernetes.io/hostname: argoworkflow.k8s.apps.scylla.cloud
+    kubernetes.io/ingress.class: alb
+  finalizers:
+  - ingress.k8s.aws/resources
+  name: argoworkflow
+  namespace: argoworkflow
+spec:
+  rules:
+  - host: argoworkflow.k8s.apps.scylla.cloud
+    http:
+      paths:
+      - backend:
+          service:
+            name: argo-server
+            port:
+              number: 443
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - argoworkflow.k8s.apps.scylla.cloud

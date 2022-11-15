@@ -25,7 +25,7 @@ spec:
           service:
             name: argo-server
             port:
-              number: 443
+              number: 2746 
         path: /*
         pathType: ImplementationSpecific
   tls:

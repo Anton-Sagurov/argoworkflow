@@ -1212,6 +1212,7 @@ subjects:
 - kind: ServiceAccount
   name: argo-server
   namespace: argoworkflow
+---
 apiVersion: v1
 kind: Service
 metadata:

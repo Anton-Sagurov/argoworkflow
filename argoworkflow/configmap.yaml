@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-controller-configmap
+  namespace: argoworkflow
+data:
+  # SSO Configuration for the Argo server.
+  # You must also start argo server with `--auth-mode sso`.
+  # https://argoproj.github.io/argo-workflows/argo-server-auth-mode/
+  sso: |
+    # This is the root URL of the OIDC provider (required).
+    issuer: https://dev-71865663-admin.okta.com 
+    # Some OIDC providers have alternate root URLs that can be included. These should be reviewed carefully. (optional)
+    #issuerAlias: https://altissuer.root.url
+    # This defines how long your login is valid for (in hours). (optional)
+    # If omitted, defaults to 10h. Example below is 10 days.
+    sessionExpiry: 8h
+    # This is name of the secret and the key in it that contain OIDC client
+    # ID issued to the application by the provider (required).
+    clientId:
+      name: argoworkflow-sso-secrets
+      key: client-id-key
+    # This is name of the secret and the key in it that contain OIDC client
+    # secret issued to the application by the provider (required).
+    clientSecret:
+      name: argoworkflow-sso-secrets
+      key: client-secret-key
+    # This is the redirect URL supplied to the provider (optional). It must
+    # be in the form <argo-server-root-url>/oauth2/callback. It must be
+    # browser-accessible. If omitted, will be automatically generated.
+    redirectUrl: https://argoworkflow.k8s.apps.scylla.cloud/oauth2/callback
+    # Additional scopes to request. Typically needed for SSO RBAC. >= v2.12
+    scopes:
+     - groups
+     - email
+    # RBAC Config. >= v2.12
+    rbac:
+      enabled: false
